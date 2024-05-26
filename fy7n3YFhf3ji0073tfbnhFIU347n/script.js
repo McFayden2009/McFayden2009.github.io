@@ -185,5 +185,5 @@ RandomPickerControls.propTypes = {
   stop: PropTypes.func
 };
 
-const namesList = ['Tayden', 'Amy', 'Meia'];
+const namesList = ['Amy', 'Tayden', 'Meia'];
 ReactDOM.render( /*#__PURE__*/_jsx(RandomPicker, { items: namesList }), document.getElementById('random-picker'));
