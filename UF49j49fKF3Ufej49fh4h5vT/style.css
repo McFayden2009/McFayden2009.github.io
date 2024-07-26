@@ -458,7 +458,7 @@
 
 .login-box form a {
   position: relative;
-  display: inline-block;
+  display: none;
   padding: 10px 20px;
   color: #03e9f4;
   font-size: 16px;
