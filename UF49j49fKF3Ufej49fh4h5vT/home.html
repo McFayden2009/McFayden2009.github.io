@@ -94,63 +94,91 @@
   </div>
   <ul id="user-data-list"></ul>
   <script>
+    const apiUrl = '/.netlify/functions/update-data';
+
     function getCookie(name) {
       let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
       if (match) return match[2];
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const userId = getCookie('UserID');
-      if (!userId) {
-        alert('No user ID found in cookies');
-        return;
-      }
-
-      fetch('data.json')
+    function fetchData() {
+      fetch(apiUrl)
         .then(response => response.json())
         .then(users => {
+          const userId = getCookie('UserID');
           const user = users.find(u => u.id == userId);
           if (user) {
             const userDataList = document.getElementById('user-data-list');
+            userDataList.innerHTML = '';
             user.userData.forEach(item => {
-              const li = document.createElement('li');
-              li.textContent = item;
-              const deleteButton = document.createElement('button');
-              deleteButton.textContent = 'Delete';
-              deleteButton.className = 'delete-button';
-              deleteButton.addEventListener('click', function() {
-                li.remove();
-              });
-              li.appendChild(deleteButton);
-              userDataList.appendChild(li);
+              addItemToDOM(item);
             });
           } else {
             alert('User data not found');
           }
         })
         .catch(error => console.error('Error fetching user data:', error));
-    });
+    }
 
-    document.getElementById('add-item-button').addEventListener('click', function() {
-      const newItemInput = document.getElementById('new-item');
-      const newItemText = newItemInput.value.trim();
-      if (newItemText === '') {
-        alert('Please enter an item.');
-        return;
-      }
-
+    function addItemToDOM(item) {
       const userDataList = document.getElementById('user-data-list');
       const li = document.createElement('li');
-      li.textContent = newItemText;
+      li.textContent = item;
       const deleteButton = document.createElement('button');
       deleteButton.textContent = 'Delete';
       deleteButton.className = 'delete-button';
       deleteButton.addEventListener('click', function() {
-        li.remove();
+        deleteItem(item);
       });
       li.appendChild(deleteButton);
       userDataList.appendChild(li);
-      newItemInput.value = '';
+    }
+
+    function addItem(item) {
+      const userId = getCookie('UserID');
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: parseInt(userId), item: item })
+      })
+      .then(response => response.json())
+      .then(() => {
+        addItemToDOM(item);
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+
+    function deleteItem(item) {
+      const userId = getCookie('UserID');
+      fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: parseInt(userId), item: item })
+      })
+      .then(response => response.json())
+      .then(() => {
+        fetchData();
+      })
+      .catch(error => console.error('Error deleting item:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchData();
+
+      document.getElementById('add-item-button').addEventListener('click', function() {
+        const newItemInput = document.getElementById('new-item');
+        const newItemText = newItemInput.value.trim();
+        if (newItemText === '') {
+          alert('Please enter an item.');
+          return;
+        }
+        addItem(newItemText);
+        newItemInput.value = '';
+      });
     });
   </script>
 </body>
