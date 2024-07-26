@@ -1,105 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Got ur nose</title>
-  <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Got ur nose</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <h2>you currently own:</h2>
-  <div class="add-item-form">
-    <input type="text" id="new-item" class="add-item-input" placeholder="Add new item">
-    <button id="add-item-button" class="add-item-button">Add</button>
-  </div>
-  <ul id="user-data-list"></ul>
-  <script>
-    const apiUrl = '/.netlify/functions/update-data';
+    <div class="content">
+        <h1>Welcome</h1>
+        <ul id="user-data-list"></ul>
+        <input type="text" id="new-item" placeholder="Add new item">
+        <button id="add-item-button">Add Item</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = getCookie('UserID');
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const user = data.users.find(user => user.id === userId);
+                    const userDataList = document.getElementById('user-data-list');
+                    if (user && user.userData) {
+                        user.userData.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item;
+                            const deleteButton = document.createElement('button');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.className = 'delete-button';
+                            deleteButton.onclick = () => deleteItem(item);
+                            li.appendChild(deleteButton);
+                            userDataList.appendChild(li);
+                        });
+                    }
+                });
 
-    function getCookie(name) {
-      let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
-    }
-
-    function fetchData() {
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(users => {
-          const userId = getCookie('UserID');
-          const user = users.find(u => u.id == userId);
-          if (user) {
-            const userDataList = document.getElementById('user-data-list');
-            userDataList.innerHTML = '';
-            user.userData.forEach(item => {
-              addItemToDOM(item);
+            document.getElementById('add-item-button').addEventListener('click', function() {
+                const newItem = document.getElementById('new-item').value;
+                if (newItem) {
+                    addItem(newItem);
+                }
             });
-          } else {
-            alert('User data not found');
-          }
-        })
-        .catch(error => console.error('Error fetching user data:', error));
-    }
 
-    function addItemToDOM(item) {
-      const userDataList = document.getElementById('user-data-list');
-      const li = document.createElement('li');
-      li.textContent = item;
-      const deleteButton = document.createElement('button');
-      deleteButton.textContent = 'Delete';
-      deleteButton.className = 'delete-button';
-      deleteButton.addEventListener('click', function() {
-        deleteItem(item);
-      });
-      li.appendChild(deleteButton);
-      userDataList.appendChild(li);
-    }
+            function addItem(item) {
+                // Code to add item (requires server-side or Staticman setup)
+                console.log('Adding item:', item);
+            }
 
-    function addItem(item) {
-      const userId = getCookie('UserID');
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: parseInt(userId), item: item })
-      })
-      .then(response => response.json())
-      .then(() => {
-        addItemToDOM(item);
-      })
-      .catch(error => console.error('Error adding item:', error));
-    }
+            function deleteItem(item) {
+                // Code to delete item (requires server-side or Staticman setup)
+                console.log('Deleting item:', item);
+            }
 
-    function deleteItem(item) {
-      const userId = getCookie('UserID');
-      fetch(apiUrl, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: parseInt(userId), item: item })
-      })
-      .then(response => response.json())
-      .then(() => {
-        fetchData();
-      })
-      .catch(error => console.error('Error deleting item:', error));
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      fetchData();
-
-      document.getElementById('add-item-button').addEventListener('click', function() {
-        const newItemInput = document.getElementById('new-item');
-        const newItemText = newItemInput.value.trim();
-        if (newItemText === '') {
-          alert('Please enter an item.');
-          return;
-        }
-        addItem(newItemText);
-        newItemInput.value = '';
-      });
-    });
-  </script>
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        });
+    </script>
 </body>
 </html>
