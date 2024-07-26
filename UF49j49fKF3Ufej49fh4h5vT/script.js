@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('login').style.display = 'none';
             setTimeout(function() {
                 // Add the 'hidden' class to start the fade-out effect
                 document.getElementById('loader').classList.add('hidden');
