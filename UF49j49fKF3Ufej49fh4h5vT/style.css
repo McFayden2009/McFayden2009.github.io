@@ -412,7 +412,7 @@
   box-sizing: border-box;
   box-shadow: 0 15px 25px rgba(0,0,0,.6);
   border-radius: 10px;
-  display: none;
+  display: block;
 }
 
 .login-box h2 {
@@ -458,7 +458,7 @@
 
 .login-box form a {
   position: relative;
-  display: none;
+  display: inline-block;
   padding: 10px 20px;
   color: #03e9f4;
   font-size: 16px;
