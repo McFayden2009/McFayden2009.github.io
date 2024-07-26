@@ -4,83 +4,154 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="home.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #141414;
+      color: #fff;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 2em;
+      color: #03e9f4;
+    }
+    
+    #user-data-list {
+      list-style: none;
+      padding: 0;
+      margin: 50px auto;
+      width: 80%;
+      max-width: 600px;
+    }
+    
+    #user-data-list li {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+      transition: background 0.3s, transform 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    #user-data-list li:hover {
+      background: #03e9f4;
+      transform: scale(1.05);
+    }
+
+    .delete-button {
+      background: transparent;
+      border: none;
+      color: #ff0000;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .delete-button:hover {
+      color: #ff6666;
+    }
+
+    .add-item-form {
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    .add-item-input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .add-item-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background-color: #03e9f4;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .add-item-button:hover {
+      background-color: #029ec2;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome!</h1>
+  <div class="add-item-form">
+    <input type="text" id="new-item" class="add-item-input" placeholder="Add new item">
+    <button id="add-item-button" class="add-item-button">Add</button>
+  </div>
   <ul id="user-data-list"></ul>
-  <script src="home.js"></script>
+  <script>
+    function getCookie(name) {
+      let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const userId = getCookie('UserID');
+      if (!userId) {
+        alert('No user ID found in cookies');
+        return;
+      }
+
+      fetch('data.json')
+        .then(response => response.json())
+        .then(users => {
+          const user = users.find(u => u.id == userId);
+          if (user) {
+            const userDataList = document.getElementById('user-data-list');
+            user.userData.forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item;
+              const deleteButton = document.createElement('button');
+              deleteButton.textContent = 'Delete';
+              deleteButton.className = 'delete-button';
+              deleteButton.addEventListener('click', function() {
+                li.remove();
+              });
+              li.appendChild(deleteButton);
+              userDataList.appendChild(li);
+            });
+          } else {
+            alert('User data not found');
+          }
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+    });
+
+    document.getElementById('add-item-button').addEventListener('click', function() {
+      const newItemInput = document.getElementById('new-item');
+      const newItemText = newItemInput.value.trim();
+      if (newItemText === '') {
+        alert('Please enter an item.');
+        return;
+      }
+
+      const userDataList = document.getElementById('user-data-list');
+      const li = document.createElement('li');
+      li.textContent = newItemText;
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.className = 'delete-button';
+      deleteButton.addEventListener('click', function() {
+        li.remove();
+      });
+      li.appendChild(deleteButton);
+      userDataList.appendChild(li);
+      newItemInput.value = '';
+    });
+  </script>
 </body>
 </html>
-
-<style>
-  body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background: #141414;
-  color: #fff;
-}
-
-h1 {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 2em;
-  color: #03e9f4;
-}
-
-#user-data-list {
-  list-style: none;
-  padding: 0;
-  margin: 50px auto;
-  width: 80%;
-  max-width: 600px;
-}
-
-#user-data-list li {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-  transition: background 0.3s, transform 0.3s;
-}
-
-#user-data-list li:hover {
-  background: #03e9f4;
-  transform: scale(1.05);
-}
-
-</style>
-<script>
-  function getCookie(name) {
-  let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  if (match) return match[2];
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const userId = getCookie('UserID');
-  if (!userId) {
-    alert('No user ID found in cookies');
-    return;
-  }
-
-  fetch('data.json')
-    .then(response => response.json())
-    .then(users => {
-      const user = users.find(u => u.id == userId);
-      if (user) {
-        const userDataList = document.getElementById('user-data-list');
-        user.userData.forEach(item => {
-          const li = document.createElement('li');
-          li.textContent = item;
-          userDataList.appendChild(li);
-        });
-      } else {
-        alert('User data not found');
-      }
-    })
-    .catch(error => console.error('Error fetching user data:', error));
-});
-
-</script>
