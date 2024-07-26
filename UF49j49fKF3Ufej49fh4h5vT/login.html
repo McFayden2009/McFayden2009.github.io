@@ -86,3 +86,25 @@
 }
 
   </style>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  fetch('data.json')
+    .then(response => response.json())
+    .then(users => {
+      const user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        document.cookie = `UserID=${user.id}; path=/`;
+        window.location.href = 'home.html';
+      } else {
+        alert('Invalid username or password');
+      }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+});
+
+</script>
