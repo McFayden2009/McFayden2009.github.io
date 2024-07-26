@@ -400,3 +400,69 @@
 .container {
 	z-index: 99999;
 }
+
+    
+    #user-data-list {
+      list-style: none;
+      padding: 0;
+      margin: 50px auto;
+      width: 80%;
+      max-width: 600px;
+    }
+    
+    #user-data-list li {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+      transition: background 0.3s, transform 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    #user-data-list li:hover {
+      background: #03e9f4;
+      transform: scale(1.05);
+    }
+
+    .delete-button {
+      background: transparent;
+      border: none;
+      color: #ff0000;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .delete-button:hover {
+      color: #ff6666;
+    }
+
+    .add-item-form {
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    .add-item-input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .add-item-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background-color: #03e9f4;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .add-item-button:hover {
+      background-color: #029ec2;
+    }
