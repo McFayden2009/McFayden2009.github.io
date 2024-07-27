@@ -401,7 +401,8 @@
 	z-index: 99999;
 }
 
-#user-data-list {
+/* Common styles for all user data lists */
+ul {
   list-style: none;
   padding: 0;
   margin: 50px auto;
@@ -409,7 +410,7 @@
   max-width: 600px;
 }
 
-#user-data-list li {
+li {
   background: rgba(0, 0, 0, 0.5);
   padding: 15px;
   margin-bottom: 10px;
@@ -418,7 +419,21 @@
   transition: background 0.3s, transform 0.3s;
 }
 
-#user-data-list li:hover {
+li:hover {
   background: #03e9f4;
   transform: scale(1.05);
+}
+
+/* Separate styles for current user data list */
+#current-user-data-list {
+  border: 2px solid #03e9f4; /* Example border style */
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Separate styles for other users data list */
+#other-users-data-list {
+  border: 2px solid #f44336; /* Example border style */
+  border-radius: 5px;
+  padding: 10px;
 }
