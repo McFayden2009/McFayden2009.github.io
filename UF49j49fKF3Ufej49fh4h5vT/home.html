@@ -7,12 +7,17 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>you own:</h1>
-  <ul id="current-user-data-list"></ul>
-  
-  <h1>Other Users' Data:</h1>
-  <ul id="other-users-data-list"></ul>
 
+    <div class="login-box">
+  <h2>you:</h2>
+  <ul id="current-user-data-list"></ul>
+    </div>
+  
+  <div class="login-box">
+      <ul id="other-users-data-list"></ul>
+  </div>
+
+  
   <script>
     function getCookie(name) {
       let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -45,7 +50,7 @@
               if (user.id != userId) {
                 // Add username
                 const usernameHeading = document.createElement('h2');
-                usernameHeading.textContent = `Username: ${user.username}`;
+                usernameHeading.textContent = `${user.username}:`;
                 otherUsersDataList.appendChild(usernameHeading);
                 
                 // Add user data
