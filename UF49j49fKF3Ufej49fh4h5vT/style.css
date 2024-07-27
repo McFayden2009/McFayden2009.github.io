@@ -420,20 +420,6 @@ li {
 }
 
 li:hover {
-  background: #03e9f4;
+  background: rgba(0, 0, 0, 0.3);
   transform: scale(1.05);
-}
-
-/* Separate styles for current user data list */
-#current-user-data-list {
-  border: 2px solid #03e9f4; /* Example border style */
-  border-radius: 5px;
-  padding: 10px;
-}
-
-/* Separate styles for other users data list */
-#other-users-data-list {
-  border: 2px solid #f44336; /* Example border style */
-  border-radius: 5px;
-  padding: 10px;
 }
