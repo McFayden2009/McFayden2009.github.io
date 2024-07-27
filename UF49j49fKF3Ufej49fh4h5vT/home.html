@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<br>
     <div class="login-box">
   <h2>you:</h2>
   <ul id="current-user-data-list"></ul>
@@ -16,8 +16,8 @@
   <div class="login-box">
       <ul id="other-users-data-list"></ul>
   </div>
-
-  
+<br>
+</body>
   <script>
     function getCookie(name) {
       let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -68,10 +68,7 @@
         .catch(error => console.error('Error fetching user data:', error));
     });
   </script>
-</body>
-</html>
-
-<style>
+    <style>
     html {
       text-align:center;
     }
@@ -102,4 +99,5 @@
 .li {
 color: rgba(160,160,160,.8);
 }
-  </style>
+    </style>
+  </html>
