@@ -1,63 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Got ur nose</title>
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Got ur nose</title>
+  <link rel="stylesheet" href="home.css">
 </head>
 <body>
-    <div class="content">
-        <h1>Welcome</h1>
-        <ul id="user-data-list"></ul>
-        <input type="text" id="new-item" placeholder="Add new item">
-        <button id="add-item-button">Add Item</button>
-    </div>
+  <h1>Welcome!</h1>
+  <ul id="user-data-list"></ul>
+  <div class="add-item-box">
+    <input type="text" id="new-item" placeholder="Add new item">
+    <button id="add-item-button">Add Item</button>
+  </div>
+  <script src="home.js"></script>
+</body>
+</html>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const userId = getCookie('UserID');
-            fetch('data.json')
-                .then(response => response.json())
-                .then(data => {
-                    const user = data.users.find(user => user.id === userId);
-                    const userDataList = document.getElementById('user-data-list');
-                    if (user && user.userData) {
-                        user.userData.forEach(item => {
-                            const li = document.createElement('li');
-                            li.textContent = item;
-                            const deleteButton = document.createElement('button');
-                            deleteButton.textContent = 'Delete';
-                            deleteButton.className = 'delete-button';
-                            deleteButton.onclick = () => deleteItem(item);
-                            li.appendChild(deleteButton);
-                            userDataList.appendChild(li);
-                        });
-                    }
-                });
+function getCookie(name) {
+  let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+}
 
-            document.getElementById('add-item-button').addEventListener('click', function() {
-                const newItem = document.getElementById('new-item').value;
-                if (newItem) {
-                    addItem(newItem);
-                }
-            });
+document.addEventListener('DOMContentLoaded', function() {
+  const userId = getCookie('UserID');
+  if (!userId) {
+    alert('No user ID found in cookies');
+    return;
+  }
 
-            function addItem(item) {
-                // Code to add item (requires server-side or Staticman setup)
-                console.log('Adding item:', item);
-            }
-
-            function deleteItem(item) {
-                // Code to delete item (requires server-side or Staticman setup)
-                console.log('Deleting item:', item);
-            }
-
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
+  fetch('data.json')
+    .then(response => response.json())
+    .then(users => {
+      const user = users.find(u => u.id == userId);
+      if (user) {
+        const userDataList = document.getElementById('user-data-list');
+        user.userData.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.className = 'delete-button';
+          deleteButton.addEventListener('click', () => {
+            deleteUserDataItem(userId, item);
+          });
+          li.appendChild(deleteButton);
+          userDataList.appendChild(li);
         });
+      } else {
+        alert('User data not found');
+      }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+
+  document.getElementById('add-item-button').addEventListener('click', () => {
+    const newItem = document.getElementById('new-item').value;
+    if (newItem) {
+      addUserDataItem(userId, newItem);
+    }
+  });
+});
+
+function deleteUserDataItem(userId, item) {
+  fetch('data.json')
+    .then(response => response.json())
+    .then(users => {
+      const userIndex = users.findIndex(u => u.id == userId);
+      if (userIndex !== -1) {
+        const itemIndex = users[userIndex].userData.indexOf(item);
+        if (itemIndex !== -1) {
+          users[userIndex].userData.splice(itemIndex, 1);
+          updateUserData(users);
+        }
+      }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+}
+
+function addUserDataItem(userId, newItem) {
+  fetch('data.json')
+    .then(response => response.json())
+    .then(users => {
+      const userIndex = users.findIndex(u => u.id == userId);
+      if (userIndex !== -1) {
+        users[userIndex].userData.push(newItem);
+        updateUserData(users);
+      }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+}
+
+function updateUserData(users) {
+  const token = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN';
+  const repoOwner = 'YOUR_GITHUB_USERNAME';
+  const repoName = 'YOUR_REPO_NAME';
+  const filePath = 'data.json';
+  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+
+  fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  })
+  .then(response => response.json())
+  .then(file => {
+    const updatedContent = btoa(JSON.stringify(users, null, 2));
+    const updatedFile = {
+      message: 'Update user data',
+      content: updatedContent,
+      sha: file.sha
+    };
+
+    fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(updatedFile)
+    })
+    .then(response => response.json())
+    .then(() => {
+      location.reload(); // Reload the page to see the updates
+    })
+    .catch(error => console.error('Error updating user data:', error));
+  })
+  .catch(error => console.error('Error fetching file SHA:', error));
+}
+
     </script>
 </body>
 </html>
