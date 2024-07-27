@@ -49,7 +49,6 @@
             users.forEach(user => {
               if (user.id != userId) {
                 // Add username
-                const spacing = document.createElement('br');
                 const usernameHeading = document.createElement('h2');
                 usernameHeading.textContent = `${user.username}:`;
                 otherUsersDataList.appendChild(usernameHeading);
