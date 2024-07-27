@@ -401,68 +401,56 @@
 	z-index: 99999;
 }
 
-    
-    #user-data-list {
-      list-style: none;
-      padding: 0;
-      margin: 50px auto;
-      width: 80%;
-      max-width: 600px;
-    }
-    
-    #user-data-list li {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-      transition: background 0.3s, transform 0.3s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    #user-data-list li:hover {
-      background: #03e9f4;
-      transform: scale(1.05);
-    }
 
-    .delete-button {
-      background: transparent;
-      border: none;
-      color: #ff0000;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    
-    .delete-button:hover {
-      color: #ff6666;
-    }
+ul {
+  list-style: none;
+  padding: 0;
+}
 
-    .add-item-form {
-      text-align: center;
-      margin: 20px auto;
-    }
+li {
+  background: #fff;
+  border: 1px solid #ddd;
+  margin: 5px 0;
+  padding: 10px;
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .add-item-input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-      margin-right: 10px;
-    }
+.delete-button {
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
 
-    .add-item-button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-      background-color: #03e9f4;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+.delete-button:hover {
+  background-color: #ff1c1c;
+}
 
-    .add-item-button:hover {
-      background-color: #029ec2;
-    }
+#new-item {
+  margin-top: 20px;
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+#add-item-button {
+  background-color: #03e9f4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+#add-item-button:hover {
+  background-color: #029dbb;
+}
+
