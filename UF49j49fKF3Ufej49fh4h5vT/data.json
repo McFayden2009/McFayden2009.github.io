@@ -1,14 +1,20 @@
 [
   {
     "id": 1,
-    "username": "user1",
+    "username": "Tayden",
     "password": "pass1",
-    "userData": ["apple", "Item 2", "Item 3"]
+    "userData": ["Taydens nose", "Taydens ear", "Taydens hair"]
   },
   {
     "id": 2,
-    "username": "user2",
+    "username": "Meia",
     "password": "pass2",
-    "userData": ["Item A", "Item B", "Item C"]
+    "userData": ["Meias Nose"]
+  },
+  {
+    "id": 3,
+    "username": "Charlotte",
+    "password": "amys wall",
+    "userData": ["Charlottes nose", "Charlottes eyes"]
   }
 ]
