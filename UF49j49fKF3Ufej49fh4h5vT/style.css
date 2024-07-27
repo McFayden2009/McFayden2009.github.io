@@ -17,7 +17,7 @@
  :root {
 	 --hue: 223;
 	 --bg: #1c1717;
-	 --fg: #1c1717;
+	 --fg: #e8e3e3;
 	 --trans-dur: 0.3s;
 	 font-size: calc(28px + (60 - 28) * (100vw - 280px) / (3840 - 280));
 }
