@@ -9,6 +9,11 @@
     
 
     <div class="wrapper">
+      
+      <div class="platform small"></div>
+      <div class="platform middle"></div>
+       <div class="platform large"></div>
+      
       <div class="cat_wrapper">
         <div class="cat first_pose">
           <div class="cat_head">
@@ -109,9 +114,15 @@ body {
   align-items: center;
   width: 100%;
 }
+  
+  .container .cantor {
+    font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0.4px;
+  }
 
 .container .title {
-  font-size: 16px;
+  font-size: 24px;
   line-height: 16px;
   letter-spacing: 0.4px;
 }
@@ -125,6 +136,37 @@ body {
   top: 0;
 }
 
+  /* Platform styling */
+.platform {
+  position: absolute;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(1, 1, 1, 0.2);
+  border: 2px solid #f0f0f025;
+  overflow: hidden;
+  font-family: "Oxygen", sans-serif;
+  gap: 24px;
+}
+
+.platform.small {
+  width: 250px;
+  left: 170px;
+  bottom: 80px; /* Lower platform */
+}
+
+ .platform.middle {
+  width: 350px;
+  Left: 270px;
+  bottom: 170px; /* Higher platform */
+}
+  
+.platform.large {
+  width: 180px;
+  Left: 110px;
+  bottom: 250px; /* Higher platform */
+}
+
+ 
 .cat {
   position: absolute;
   bottom: 18px;
@@ -135,8 +177,6 @@ body {
   transform-origin: center;
   background-color: transparent;
 }
-
-/* body */
 
 .body {
   position: absolute;
@@ -374,95 +414,158 @@ path {
 }
   
 </style>
+
 <script>
-
-function init() { 
-  const catWrapper = document.querySelector('.cat_wrapper')
-  const wrapper = document.querySelector('.wrapper')
-  const cat = document.querySelector('.cat')
-  const head = document.querySelector('.cat_head')
-  const legs = document.querySelectorAll('.leg')
-  const pos = {
-    x: null,
-    y: null
-  }
-
-  const walk = () =>{
-    cat.classList.remove('first_pose')
-    legs.forEach(leg=>leg.classList.add('walk'))
-  }
-
-  const handleMouseMotion = e =>{
-    pos.x = e.clientX
-    pos.y = e.clientY
-    walk()
-  }
-
-  const handleTouchMotion = e =>{
-    if (!e.targetTouches) return
-    pos.x = e.targetTouches[0].offsetX
-    pos.y = e.targetTouches[0].offsetY
-    walk()
-  }
-
-  const turnRight = () =>{
-    cat.style.left = `${pos.x - 90}px`
-    cat.classList.remove('face_left')
-    cat.classList.add('face_right')
-  }
-
-  const turnLeft = () =>{
-    cat.style.left = `${pos.x + 10}px`
-    cat.classList.remove('face_right')
-    cat.classList.add('face_left')
-  }
-
-  const decideTurnDirection = () =>{
-    cat.getBoundingClientRect().x < pos.x ?
-      turnRight()
-      :
-      turnLeft()
-  }
-
-  const headMotion = () =>{
-    pos.y > (wrapper.clientHeight - 100) ?
-      head.style.top = '-15px'
-      :
-      head.style.top = '-30px'
-  }
-
-  const jump = () =>{
-    catWrapper.classList.remove('jump')
-    if (pos.y < (wrapper.clientHeight - 250)) {
-      setTimeout(()=>{
-        catWrapper.classList.add('jump')
-      },100)
-    } 
-  }
-
-  const decideStop = ()=>{
-    if (cat.classList.contains('face_right') && pos.x - 90 === cat.offsetLeft ||
-        cat.classList.contains('face_left') && pos.x + 10 === cat.offsetLeft) {
-      legs.forEach(leg=>leg.classList.remove('walk'))    
-    }
-  }
+  function init() { 
+  const catWrapper = document.querySelector('.cat_wrapper');
+  const wrapper = document.querySelector('.wrapper');
+  const cat = document.querySelector('.cat');
+  const head = document.querySelector('.cat_head');
+  const legs = document.querySelectorAll('.leg');
   
-  setInterval(()=>{
-    if (!pos.x || !pos.y) return
-    decideTurnDirection()
-    headMotion()
-    decideStop()
-  },100)
+  // Define Platform Coordinates (y positions and widths)
+  const platforms = [
+    { y: 80, width: 300, left: 170, name: 'small' }, // Lower platform
+    { y: 170, width: 400, left: 270, name: 'large' }, // Middle platform
+    { y: 250, width: 230, left: 110, name: 'large' }  // Higher platform
+  ];
 
-  setInterval(()=>{
-    if (!pos.x || !pos.y) return
-    jump()
-  },1000)
+  let pos = {
+    x: null,
+    y: null,
+    ground: 0, // Starting ground level
+    isJumping: false, // Track if the cat is in mid-jump
+    isFalling: false // Track if the cat is falling
+  };
 
-  document.addEventListener('mousemove', handleMouseMotion)
-  document.addEventListener('mousemove', handleTouchMotion)
+  const walk = () => {
+    cat.classList.remove('first_pose');
+    legs.forEach(leg => leg.classList.add('walk'));
+  };
+
+  const handleMouseMotion = e => {
+    pos.x = e.clientX;
+    pos.y = e.clientY;
+    walk();
+  };
+
+  const handleTouchMotion = e => {
+    if (!e.targetTouches) return;
+    pos.x = e.targetTouches[0].offsetX;
+    pos.y = e.targetTouches[0].offsetY;
+    walk();
+  };
+
+  const turnRight = () => {
+    cat.style.left = `${pos.x - 90}px`;
+    cat.classList.remove('face_left');
+    cat.classList.add('face_right');
+  };
+
+  const turnLeft = () => {
+    cat.style.left = `${pos.x + 10}px`;
+    cat.classList.remove('face_right');
+    cat.classList.add('face_left');
+  };
+
+  const decideTurnDirection = () => {
+    cat.getBoundingClientRect().x < pos.x ? turnRight() : turnLeft();
+  };
+
+  const headMotion = () => {
+    pos.y > (wrapper.clientHeight - 100) ? head.style.top = '-15px' : head.style.top = '-30px';
+  };
+
+  // Jump function: cat jumps to the mouse's Y position
+  const jump = () => {
+    pos.isJumping = true; // Set flag to indicate the cat is jumping
+    let jumpTargetY = pos.y; // The y position where the mouse was clicked
+    let jumpDestination = wrapper.clientHeight - jumpTargetY; // Convert to coordinate relative to the wrapper
+
+    // Determine where the cat should land based on Y position of click
+    if (jumpTargetY <= wrapper.clientHeight - platforms[2].y) {
+      // Jump to the highest platform
+      pos.ground = platforms[2].y;
+    } else if (jumpTargetY > wrapper.clientHeight - platforms[2].y && jumpTargetY <= wrapper.clientHeight - platforms[1].y) {
+      // Jump to the middle platform
+      pos.ground = platforms[1].y;
+    } else {
+      // Jump to the lower platform or ground
+      pos.ground = jumpTargetY <= wrapper.clientHeight - platforms[0].y ? platforms[0].y : 0;
+    }
+
+    // Animate jump to the new position
+    catWrapper.style.transition = 'bottom 0.5s ease-out'; // Smooth jump
+    catWrapper.style.bottom = `${pos.ground}px`;
+
+    // Stop the jumping animation after the jump
+    setTimeout(() => {
+      pos.isJumping = false; // Reset jump flag after landing
+      legs.forEach(leg => leg.classList.remove('walk')); // Stop legs after jump
+    }, 600); // Same time as the jump transition
+  };
+
+  const decideStop = () => {
+    if (
+      (cat.classList.contains('face_right') && pos.x - 90 === cat.offsetLeft) ||
+      (cat.classList.contains('face_left') && pos.x + 10 === cat.offsetLeft)
+    ) {
+      legs.forEach(leg => leg.classList.remove('walk'));
+    }
+  };
+
+  // Gravity function: make the cat fall if it's not on a platform
+  const applyGravity = () => {
+    if (pos.isJumping || pos.isFalling) return; // Don't apply gravity while jumping or already falling
+
+    const catLeft = cat.getBoundingClientRect().left;
+    const catRight = catLeft + cat.offsetWidth;
+    const catBottom = parseFloat(getComputedStyle(catWrapper).bottom);
+
+    // Check if cat is outside platform boundaries
+    let isOnPlatform = platforms.some(platform => {
+      const platformLeft = platform.left;
+      const platformRight = platform.left + platform.width;
+      return catBottom === platform.y && catLeft >= platformLeft && catRight <= platformRight;
+    });
+
+    // If cat is not on any platform, make it fall
+    if (!isOnPlatform && catBottom > 0) {
+      pos.isFalling = true;
+      let targetGround = 0; // Default ground is the bottom
+
+      // Check if there's a lower platform to fall onto
+      platforms.forEach(platform => {
+        if (catBottom > platform.y) {
+          targetGround = Math.max(targetGround, platform.y);
+        }
+      });
+
+      // Apply the fall animation
+      catWrapper.style.transition = 'bottom 0.5s ease-in'; // Smooth falling
+      catWrapper.style.bottom = `${targetGround}px`;
+
+      setTimeout(() => {
+        pos.isFalling = false; // Stop falling after landing
+      }, 500); // Same duration as the transition
+    }
+  };
+
+  setInterval(() => {
+    if (!pos.x || !pos.y) return;
+    decideTurnDirection();
+    headMotion();
+    decideStop();
+    applyGravity(); // Continuously apply gravity check
+  }, 100);
+
+  // Add event listeners for mouse and touch
+  document.addEventListener('mousemove', handleMouseMotion);
+  document.addEventListener('mousemove', handleTouchMotion);
+  document.addEventListener('click', jump); // Only jump on click/touch
+  document.addEventListener('touchstart', jump); // Jump on touch
 }
 
-window.addEventListener('DOMContentLoaded', init)
-  
+window.addEventListener('DOMContentLoaded', init);
+
 </script>
