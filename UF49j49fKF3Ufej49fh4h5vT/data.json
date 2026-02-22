@@ -14,7 +14,19 @@
   {
     "id": 3,
     "username": "Charlotte",
-    "password": "amys wall",
+    "password": "amyswall",
     "userData": ["Charlottes nose", "Charlottes eyes"]
+  },
+  {
+    "id": 4,
+    "username": "Stphanie",
+    "password": "racingiscool",
+    "userData": ["Charlottes nose", "Charlottes eyes"]
+  },
+  {
+    "id": 5,
+    "username": "Amy",
+    "password": "whatbody",
+    "userData": ["Amys head", "Amys left arm", "Amys right arm", "Amys left leg", "Amys right leg",]
   }
 ]
