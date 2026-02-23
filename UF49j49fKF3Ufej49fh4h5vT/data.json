@@ -3,25 +3,25 @@
     "id": 1,
     "username": "Tayden",
     "password": "mcfayden09",
-    "userData": ["Taydens nose", "Taydens ear", "Taydens hair"]
+    "userData": ["Tayden head", "Taydens left arm", "Taydens right arm", "Taydens left leg", "Taydens right leg", "Taydens upper torso", "Taydens lower torso", "Taydens left food", "Taydens right foot"]
   },
   {
     "id": 2,
     "username": "Meia",
     "password": "cocoa",
-    "userData": ["Meias Nose"]
+    "userData": ["Meias head", "Meias left arm", "Meias right arm", "Meias left leg", "Meias right leg", "Meias upper torso", "Meias lower torso", "Meias left food", "Meias right foot"]
   },
   {
     "id": 3,
     "username": "Charlotte",
     "password": "amyswall",
-    "userData": ["Charlottes nose", "Charlottes eyes"]
+    "userData": ["Charlottes head", "Charlottes left arm", "Charlottes right arm", "Charlottes left leg", "Charlottes right leg", "Charlottes upper torso", "Charlottes lower torso", "Charlottes left food", "Charlottes right foot"]
   },
   {
     "id": 4,
     "username": "Stphanie",
     "password": "racingiscool",
-    "userData": ["Charlottes nose", "Charlottes eyes"]
+    "userData": ["Stphanies head", "Stphanies left arm", "Stphanies right arm", "Stphanies left leg", "Stphanies right leg", "Stphanies upper torso", "Stphanies lower torso", "Stphanies left food", "Stphanies right foot"]
   },
   {
     "id": 5,
