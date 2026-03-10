@@ -2,7 +2,7 @@
   <div class="main">
     <h1>ToErrIsHuman</h1><br>
     <h3>please enter the code here:</h3><input type="text" id="codeInput"/><button onclick="run()">Submit</button><br>
-    <textarea id="resultBox" rows="10" cols="60" readonly></textarea>
+    <textarea id="resultBox" rows="10" cols="60" readonly style="display:none;"></textarea>
     <p id="wrongCode" style="color:red;"></p>
   </div>
     
@@ -56,7 +56,6 @@
         const finalMessage = decrypted.slice(0, -verificationSequence.length);
         const resultBox = document.getElementById('resultBox');
         resultBox.value = finalMessage;
-        resultBox.style.display = 'block';
 
         // Hide wrong code text
         document.getElementById('wrongCode').innerText = "";
