@@ -1,7 +1,9 @@
 <body>
-  <h1>ToErrIsHuman</h1><br>
-  <h3>please enter the code here:</h3><input type="text"/><button onclick="run()">Submit</button><br>
-  <p id="result"></p>
+  <div class="main">
+    <h1>ToErrIsHuman</h1><br>
+    <h3>please enter the code here:</h3><input type="text"/><button onclick="run()">Submit</button><br>
+    <p id="result"></p>
+  </div>
     
   <div class="footer">
     <p>copyright Tayden Websites 2026</p>
@@ -10,19 +12,20 @@
 
 <style>
   .footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  color: gray;
-  text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: gray;
+    text-align: center;
   }
 
-  body{
+  .main{
     display: flex;
     justify-content: center; /* Horizontal centering */
+    align-items: center;     /* Vertical centering */
     min-height: 100vh;       /* Ensures body is at least as tall as the viewport */
-    margin: 0;
+    margin: 0; 
   }
 </style>
 
