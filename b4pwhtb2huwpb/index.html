@@ -2,8 +2,7 @@
   <div class="main">
     <h1>ToErrIsHuman</h1><br>
     <h3>please enter the code here:</h3><input type="text" id="codeInput"/><button onclick="run()">Submit</button><br>
-    <textarea id="resultBox" rows="10" cols="60" readonly style="display:none;"></textarea>
-    <p id="wrongCode" style="color:red;"></p>
+    <textarea id="resultBox" rows="10" cols="60" readonly></textarea>
   </div>
     
   <div class="footer">
@@ -57,11 +56,8 @@
         const resultBox = document.getElementById('resultBox');
         resultBox.value = finalMessage;
 
-        // Hide wrong code text
-        document.getElementById('wrongCode').innerText = "";
       } else {
-        document.getElementById('resultBox').style.display = 'none';
-        document.getElementById('wrongCode').innerText = "Wrong code!";
+        resultBox.value = "Wrong code!";
       }
     }
   </script>
