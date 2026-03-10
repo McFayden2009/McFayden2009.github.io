@@ -1,26 +1,18 @@
 <h1>ToErrIsHuman</h1><br>
-<body>
-  <main>
-    <h3>please enter the code here:</h3>
-  <input type="text"/><button onclick="run()"/>
-  </main>
-  <footer>
-    <p>copyright Tayden Websites 2026</p>
-  </footer>
-</body>
+<h3>please enter the code here:</h3><input type="text"/><button onclick="run()"/>
+  
+<div class="footer">
+  <p>copyright Tayden Websites 2026</p>
+</div>
 
 <style>
-  body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures the body is at least as tall as the screen */
-  margin: 0;
-  justify-content: center; /* Horizontal centering */
-  align-items: center;     /* Vertical centering */
-}
-
-main {
-  flex: 1; /* Pushes the footer to the bottom by taking up all remaining space */
+  .footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: gray;
+  text-align: center;
 }
 </style>
 
