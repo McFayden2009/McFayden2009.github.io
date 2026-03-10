@@ -2,7 +2,8 @@
   <div class="main">
     <h1>ToErrIsHuman</h1><br>
     <h3>please enter the code here:</h3><input type="text" id="codeInput"/><button onclick="run()">Submit</button><br>
-    <p id="result"></p>
+    <textarea id="resultBox" rows="10" cols="60" readonly style="display:none;"></textarea>
+    <p id="wrongCode" style="color:red;"></p>
   </div>
     
   <div class="footer">
@@ -23,6 +24,12 @@
   .main{
     text-align: center;
   }
+
+  #resultBox {
+      overflow-y: scroll;
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
 </style>
 
 <script>
@@ -40,17 +47,22 @@
 
     const verificationSequence = "ge3tviek30"; // sequence to check at the end
 
-    function run(){
+    function run() {
       const userCode = document.getElementById('codeInput').value;
-
-      // decrypt
       const decrypted = xorEncryptDecrypt(atob(encryptedMessage), userCode);
 
       if (decrypted.endsWith(verificationSequence)) {
-        // remove the verification sequence for display
-        document.getElementById('result').innerText = decrypted.slice(0, -verificationSequence.length);
+        // Show scrollable box
+        const finalMessage = decrypted.slice(0, -verificationSequence.length);
+        const resultBox = document.getElementById('resultBox');
+        resultBox.value = finalMessage;
+        resultBox.style.display = 'block';
+
+        // Hide wrong code text
+        document.getElementById('wrongCode').innerText = "";
       } else {
-        document.getElementById('result').innerText = "Wrong code!";
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('wrongCode').innerText = "Wrong code!";
       }
     }
   </script>
