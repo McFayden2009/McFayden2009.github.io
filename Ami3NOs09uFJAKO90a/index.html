@@ -255,8 +255,8 @@
       flashImage.src = decryptedImageBase64.slice(0, -verificationSequence.length);
 
       setTimeout(() => {
-
-
+	sessionStorage.setItem("code0", secretMessage);
+	window.location.href = "article.html";
       }, 1000);
 
     } catch (e) {
