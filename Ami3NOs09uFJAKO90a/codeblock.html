@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CANTO3</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      visibility: hidden;
+      background: #FFF;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    #app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .center-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: min(520px, 90vw);
+      padding: 24px 28px;
+      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      backdrop-filter: blur(4px);
+    }
+
+    .code-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .code-row label {
+      min-width: 92px;
+      text-transform: uppercase;
+    }
+
+    .code-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      outline: none;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .code-row input::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .submit-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    .submit-row button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #111;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .corner-image {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 40vw;
+      height: 40vw;
+      max-width: 40vh;
+      max-height: 40vh;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <form id="articleForm" class="center-box" autocomplete="off">
+      <div class="code-row">
+        <label for="code1">Code 01:</label>
+        <input id="code1" type="text" placeholder='_°_&#39;_._"N_°_&#39;_._E' autocomplete="off" spellcheck="false" />
+      </div>
+
+      <div class="code-row">
+        <label for="code2">Code 02:</label>
+        <input id="code2" type="text" placeholder='_______,_______,_______.' autocomplete="off" spellcheck="false" />
+      </div>
+
+      <div class="code-row">
+        <label for="code3">Code 03:</label>
+        <input id="code3" type="text" placeholder='_ _ _ _ _ _ _ _ _ _ _ _ _ _' autocomplete="off" spellcheck="false" />
+      </div>
+
+      <div class="submit-row">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+
+    <img class="corner-image" src="logo.png" alt="Logo" />
+  </div>
+
+  <script>
+    const code0 = sessionStorage.getItem("code0");
+    if (!code0) {
+      window.location.href = "index.html";
+    }
+    sessionStorage.removeItem("code0");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.style.visibility = "visible";
+      document.body.style.background = "linear-gradient(to bottom left, yellow, black)";
+    });
+
+    const encryptedData = "4SvCJzfgNN6GC8CMcIRpQXZTOPdavYVyEAvVgHuH+O5qmHnSSCrMEi7GRmQ=";
+    const saltB64 = "KXpeYphh2lKDNJxu/L6JFw==";
+    const ivB64 = "HSVs8+pMqnCB4Hm7";
+
+    function base64ToBytes(base64) {
+      return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    }
+
+    async function deriveKey(password, salt) {
+      const enc = new TextEncoder();
+
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+      );
+
+      return crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations: 100000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+    }
+
+    async function decryptPayload(combinedPassword) {
+      const salt = base64ToBytes(saltB64);
+      const iv = base64ToBytes(ivB64);
+      const ciphertext = base64ToBytes(encryptedData);
+
+      const key = await deriveKey(combinedPassword, salt);
+
+      const decryptedBuffer = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv },
+        key,
+        ciphertext
+      );
+
+      return new TextDecoder().decode(decryptedBuffer).slice(0, -10);
+    }
+
+    document.getElementById("articleForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const code1 = document.getElementById("code1").value;
+      const code2 = document.getElementById("code2").value;
+      const code3 = document.getElementById("code3").value;
+
+      const combined = code0 + code1 + code2 + code3;
+
+      try {
+        const decryptedCode = await decryptPayload(combined);
+        console.log(decryptedCode);
+      } catch (err) {
+        console.log("wrong code");
+      }
+    });
+  </script>
+</body>
+</html>
