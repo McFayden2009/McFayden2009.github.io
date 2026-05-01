@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secret Challenge</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #FFF;
+      font-family: Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .computer-wrap {
+      position: relative;
+      width: min(95vw, 95vh * 1.4);
+      height: min(95vh, 95vw / 1.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .computer-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* keeps entire image visible */
+      display: block;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .screen {
+      position: absolute;
+      left: 40%;
+      top: 18%;
+      width: 22%;
+      height: 18%;
+      display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 1.5% 1.5% 0 0;
+  box-sizing: border-box;
+}
+
+.screen input {
+  width: 92%;
+  height: auto;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #00ff66;
+  font-size: clamp(16px, 2vw, 28px);
+  text-align: left;
+  caret-color: #00ff66;
+  font-family: monospace;
+  text-shadow: 0 0 6px rgba(0, 255, 102, 0.4);
+  align-self: flex-start;
+}
+
+    .screen input::placeholder {
+      color: rgba(0, 255, 102, 0.5);
+    }
+
+    #resultBox {
+      display: none;
+      margin-top: 20%;
+      width: 95%;
+      height: 80%;
+      position: absolute;
+      resize: none;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      color: #00ff66;
+      font-family: monospace;
+      font-size: clamp(14px, 1.5vw, 20px);
+      text-align: left;
+      padding: 10px;
+      box-sizing: border-box;
+      align-self: flex-start;
+    }
+
+    #wrongCode {
+      position: absolute;
+      bottom: -18%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff6666;
+      font-family: monospace;
+      font-size: clamp(14px, 1.5vw, 20px);
+      white-space: nowrap;
+    }
+
+    /* Optional invisible submit button */
+    .hidden-submit {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="computer-wrap">
+      <img class="computer-img" src="computer.jpg" alt="Old computer" />
+
+      <div class="screen">
+        <form id="codeForm" autocomplete="off">
+          <input
+            id="codeInput"
+            type="text"
+            placeholder="enter code..."
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+          <button class="hidden-submit" type="submit">Submit</button>
+        </form>
+
+        <textarea id="resultBox" readonly></textarea>
+        <div id="wrongCode"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Replace these with your AES-GCM values from your encryption step
+    const verificationSequence = "ge3tviek30";
+    const encryptedData = "BOptacyiiA+3BuB2bb0pPo1pOyndz0nn+YJ1iEy9Eir1nz1z6IT/8rz+SA==";
+    const saltB64 = "zrLOjgSXuaOHfNWxrYln1w==";
+    const ivB64 = "gsuo/V+2NEXYLNQZ";
+
+    function base64ToBytes(base64) {
+      return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    }
+
+    async function deriveKey(password, salt) {
+      const enc = new TextEncoder();
+
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+      );
+
+      return crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations: 100000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+    }
+
+    async function run() {
+      const password = document.getElementById("codeInput").value;
+      const resultBox = document.getElementById("resultBox");
+      const wrongCode = document.getElementById("wrongCode");
+
+      try {
+        const salt = base64ToBytes(saltB64);
+        const iv = base64ToBytes(ivB64);
+        const ciphertext = base64ToBytes(encryptedData);
+
+        const key = await deriveKey(password, salt);
+
+        const decryptedBuffer = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
+          key,
+          ciphertext
+        );
+
+        const decrypted = new TextDecoder().decode(decryptedBuffer);
+
+        if (decrypted.endsWith(verificationSequence)) {
+          resultBox.value = decrypted.slice(0, -verificationSequence.length);
+          resultBox.style.display = "block";
+          wrongCode.textContent = "";
+        } else {
+          throw new Error("Bad verification");
+        }
+      } catch (e) {
+        resultBox.style.display = "none";
+        wrongCode.textContent = "Wrong code!";
+      }
+    }
+
+    document.getElementById("codeForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      run();
+    });
+
+    // Click sound on every key press
+    let audioCtx = null;
+
+    function playClick() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = "square";
+      osc.frequency.setValueAtTime(900, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.001);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.035);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      // Skip pure modifier keys if you do not want them to click
+      if (
+        e.key === "Shift" ||
+        e.key === "Control" ||
+        e.key === "Alt" ||
+        e.key === "Meta"
+      ) return;
+
+      playClick();
+    });
+  </script>
+</body>
+</html>
