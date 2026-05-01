@@ -35,7 +35,7 @@
     .computer-img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* keeps entire image visible */
+      object-fit: contain;
       display: block;
       user-select: none;
       pointer-events: none;
@@ -103,7 +103,6 @@
       white-space: nowrap;
     }
 
-    /* Optional invisible submit button */
     .hidden-submit {
       position: absolute;
       left: -9999px;
@@ -138,7 +137,6 @@
   </div>
 
   <script>
-    // Replace these with your AES-GCM values from your encryption step
     const verificationSequence = "ge3tviek30";
     const encryptedData = "BOptacyiiA+3BuB2bb0pPo1pOyndz0nn+YJ1iEy9Eir1nz1z6IT/8rz+SA==";
     const saltB64 = "zrLOjgSXuaOHfNWxrYln1w==";
@@ -211,7 +209,6 @@
       run();
     });
 
-    // Click sound on every key press
     let audioCtx = null;
 
     function playClick() {
@@ -242,7 +239,6 @@
     }
 
     document.addEventListener("keydown", (e) => {
-      // Skip pure modifier keys if you do not want them to click
       if (
         e.key === "Shift" ||
         e.key === "Control" ||
