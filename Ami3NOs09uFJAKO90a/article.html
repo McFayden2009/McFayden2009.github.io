@@ -1,0 +1,8 @@
+<script>
+  const message = sessionStorage.getItem("puzzleMessage");
+
+  if (message) {
+    console.log(message);
+    sessionStorage.removeItem("puzzleMessage"); // optional one-time use
+  }
+</script>
