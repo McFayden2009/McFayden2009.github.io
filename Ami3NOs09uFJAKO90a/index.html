@@ -266,10 +266,49 @@
   }
 
   document.getElementById("codeForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    run();
-  });
-</script>
+      e.preventDefault();
+      run();
+    });
 
+    let audioCtx = null;
+
+    function playClick() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = "square";
+      osc.frequency.setValueAtTime(900, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.001);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.035);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Shift" ||
+        e.key === "Control" ||
+        e.key === "Alt" ||
+        e.key === "Meta"
+      ) return;
+
+      playClick();
+    });
+  </script>
 </body>
 </html>
