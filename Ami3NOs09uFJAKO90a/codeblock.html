@@ -88,6 +88,34 @@
       font-weight: 600;
     }
 
+    .submit-row button.error {
+      animation: redPulse 0.6s ease;
+    }
+    
+    @keyframes redPulse {
+      0% {
+        transform: scale(1);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      25% {
+        transform: scale(1.08);
+        background: #ff4444;
+      }
+      50% {
+        transform: scale(0.96);
+        background: #cc0000;
+      }
+      75% {
+        transform: scale(1.04);
+        background: #ff4444;
+      }
+      100% {
+        transform: scale(1);
+        background: rgba(255, 255, 255, 0.9);
+      }
+    }
+
+
     .corner-image {
       position: absolute;
       right: 0;
@@ -198,6 +226,12 @@
         console.log(decryptedCode);
       } catch (err) {
         console.log("wrong code");
+      
+        const button = document.querySelector(".submit-row button");
+      
+        button.classList.remove("error");
+        void button.offsetWidth; // restart animation
+        button.classList.add("error");
       }
     });
   </script>
