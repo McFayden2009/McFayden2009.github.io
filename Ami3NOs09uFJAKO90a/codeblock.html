@@ -135,9 +135,9 @@
       document.body.style.background = "linear-gradient(to bottom left, yellow, black)";
     });
 
-    const encryptedData = "4SvCJzfgNN6GC8CMcIRpQXZTOPdavYVyEAvVgHuH+O5qmHnSSCrMEi7GRmQ=";
-    const saltB64 = "KXpeYphh2lKDNJxu/L6JFw==";
-    const ivB64 = "HSVs8+pMqnCB4Hm7";
+    const encryptedData = "9Sn6RIB0kYajraRmctMQmwQolGdIq+b85iTzDAdBTim6KLrKD40mCDyfKtg=";
+    const saltB64 = "DFj+gUKYApRdIur5WdJ+oQ==";
+    const ivB64 = "ZWW14mJAjLZR5TgX";
 
     function base64ToBytes(base64) {
       return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
@@ -191,7 +191,7 @@
       const code2 = document.getElementById("code2").value;
       const code3 = document.getElementById("code3").value;
 
-      const combined = code0 + code1 + code2 + code3;
+      const combined = code1 + code2 + code3;
 
       try {
         const decryptedCode = await decryptPayload(combined);
