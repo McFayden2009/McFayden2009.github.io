@@ -92,10 +92,10 @@
       position: absolute;
       right: 0;
       bottom: 0;
-      width: 40vw;
-      height: 40vw;
-      max-width: 40vh;
-      max-height: 40vh;
+      width: 30vw;
+      height: 30vw;
+      max-width: 30vh;
+      max-height: 30vh;
       object-fit: contain;
       pointer-events: none;
       user-select: none;
@@ -129,11 +129,6 @@
   </div>
 
   <script>
-    const code0 = sessionStorage.getItem("code0");
-    if (!code0) {
-      window.location.href = "index.html";
-    }
-    sessionStorage.removeItem("code0");
 
     document.addEventListener("DOMContentLoaded", () => {
       document.body.style.visibility = "visible";
