@@ -201,7 +201,7 @@
   }
 
   async function run() {
-    const password = document.getElementById("codeInput").value;
+    const password = document.getElementById("codeInput").value.toLowerCase();
     const resultBox = document.getElementById("resultBox");
     const wrongCode = document.getElementById("wrongCode");
 
