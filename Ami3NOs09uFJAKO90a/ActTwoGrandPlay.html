@@ -219,7 +219,7 @@
             clearInterval(timer);
             resolve();
           }
-        }, speed + Math.random());
+        }, speed + Math.Floor(Math.random() * 25));
       });
     }
 
