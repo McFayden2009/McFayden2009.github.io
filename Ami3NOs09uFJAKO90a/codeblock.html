@@ -159,8 +159,10 @@
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     document.body.style.visibility = "visible";
-    document.body.style.background = "linear-gradient(to bottom left, yellow, black)";
+    document.body.style.background =
+      "linear-gradient(to bottom left, yellow, black)";
   });
+
 
   /*
    * ============================================================
@@ -172,6 +174,7 @@
   const saltB64A = "nrDOL1P3Cl6JgHrFo5SuRA==";
   const ivB64A = "sOqLXzZ8kuFv+MQh";
 
+
   /*
    * ============================================================
    * ENCRYPTED WEBSITE B
@@ -181,6 +184,7 @@
   const encryptedDataB = "REPLACE_WITH_ENCRYPTED_DATA_B";
   const saltB64B = "REPLACE_WITH_SALT_B";
   const ivB64B = "REPLACE_WITH_IV_B";
+
 
   /*
    * ============================================================
@@ -251,19 +255,19 @@
       ciphertext
     );
 
-    /*
-     * Your original code removes the final 10 characters.
-     * This assumes your encrypted plaintext still has
-     * the same 10-character padding at the end.
-     */
+    // No 10-character padding is removed.
     return new TextDecoder().decode(decryptedBuffer);
+  }
 
 
   function showError() {
     const button = document.querySelector(".submit-row button");
 
     button.classList.remove("error");
+
+    // Restart animation.
     void button.offsetWidth;
+
     button.classList.add("error");
   }
 
@@ -271,12 +275,24 @@
   document
     .getElementById("articleForm")
     .addEventListener("submit", async (e) => {
-
       e.preventDefault();
 
-      const code1 = document.getElementById("code1").value.toLowerCase();
-      const code2 = document.getElementById("code2").value.toLowerCase();
-      const code3 = document.getElementById("code3").value.toLowerCase();
+      // Automatically convert all codes to lowercase.
+      const code1 = document
+        .getElementById("code1")
+        .value
+        .toLowerCase();
+
+      const code2 = document
+        .getElementById("code2")
+        .value
+        .toLowerCase();
+
+      const code3 = document
+        .getElementById("code3")
+        .value
+        .toLowerCase();
+
 
       let stage = null;
       let combinedPassword = null;
@@ -284,11 +300,12 @@
       let saltB64 = null;
       let ivB64 = null;
 
+
       /*
-       * --------------------------------------------------------
+       * ========================================================
        * STAGE 1
-       * Only Code 1 has been entered
-       * --------------------------------------------------------
+       * Code 1 only
+       * ========================================================
        */
       if (code1 && !code2 && !code3) {
         stage = "A";
@@ -300,11 +317,12 @@
         ivB64 = ivB64A;
       }
 
+
       /*
-       * --------------------------------------------------------
+       * ========================================================
        * STAGE 2
-       * Code 1 + Code 2 have been entered
-       * --------------------------------------------------------
+       * Code 1 + Code 2
+       * ========================================================
        */
       else if (code1 && code2 && !code3) {
         stage = "B";
@@ -316,11 +334,12 @@
         ivB64 = ivB64B;
       }
 
+
       /*
-       * --------------------------------------------------------
+       * ========================================================
        * STAGE 3
-       * All three codes have been entered
-       * --------------------------------------------------------
+       * Code 1 + Code 2 + Code 3
+       * ========================================================
        */
       else if (code1 && code2 && code3) {
         stage = "C";
@@ -332,8 +351,11 @@
         ivB64 = ivB64C;
       }
 
+
       /*
-       * Invalid combination of fields
+       * ========================================================
+       * INVALID COMBINATION
+       * ========================================================
        */
       else {
         showError();
@@ -342,10 +364,10 @@
 
 
       /*
-       * For A and B, open a blank tab immediately.
+       * A and B must open in a new tab.
        *
-       * This is done before the async decryption because some
-       * browsers will block window.open() after an await.
+       * Open the tab BEFORE awaiting decryption because
+       * browsers may block window.open() after an await.
        */
       let newTab = null;
 
@@ -366,20 +388,20 @@
           ivB64
         );
 
+
         /*
-         * Optional safety check:
-         * Make sure the decrypted value looks like a URL.
+         * Make sure the decrypted value is a URL.
          */
         if (!/^https?:\/\//i.test(decryptedUrl)) {
-          throw new Error("Invalid decrypted URL");
+          throw new Error("Decrypted value is not a valid URL.");
         }
 
 
         /*
-         * ------------------------------------------------------
+         * ======================================================
          * WEBSITE A
          * New tab
-         * ------------------------------------------------------
+         * ======================================================
          */
         if (stage === "A") {
           if (newTab) {
@@ -393,10 +415,10 @@
 
 
         /*
-         * ------------------------------------------------------
+         * ======================================================
          * WEBSITE B
          * New tab
-         * ------------------------------------------------------
+         * ======================================================
          */
         if (stage === "B") {
           if (newTab) {
@@ -410,10 +432,10 @@
 
 
         /*
-         * ------------------------------------------------------
+         * ======================================================
          * WEBSITE C
-         * Same tab
-         * ------------------------------------------------------
+         * Current tab
+         * ======================================================
          */
         if (stage === "C") {
           window.location.href = decryptedUrl;
@@ -424,8 +446,7 @@
         console.log("Wrong code");
 
         /*
-         * If a blank tab was opened but the password was wrong,
-         * close it again.
+         * Close the blank tab if decryption failed.
          */
         if (newTab && !newTab.closed) {
           newTab.close();
