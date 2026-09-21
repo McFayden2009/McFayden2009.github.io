@@ -256,10 +256,7 @@
      * This assumes your encrypted plaintext still has
      * the same 10-character padding at the end.
      */
-    return new TextDecoder()
-      .decode(decryptedBuffer)
-      .slice(0, -10);
-  }
+    return new TextDecoder().decode(decryptedBuffer);
 
 
   function showError() {
@@ -277,9 +274,9 @@
 
       e.preventDefault();
 
-      const code1 = document.getElementById("code1").value;
-      const code2 = document.getElementById("code2").value;
-      const code3 = document.getElementById("code3").value;
+      const code1 = document.getElementById("code1").value.toLowerCase();
+      const code2 = document.getElementById("code2").value.toLowerCase();
+      const code3 = document.getElementById("code3").value.toLowerCase();
 
       let stage = null;
       let combinedPassword = null;
@@ -298,9 +295,9 @@
 
         combinedPassword = code1;
 
-        encryptedData = encryptedDataA;
-        saltB64 = saltB64A;
-        ivB64 = ivB64A;
+        encryptedData = "MIHLqRt31H1pmPpcs3Zlfs8mQoCoH0tfdZZMn7dBxKstjOyz12QGn3FcSTd4W34Vx8iKDuiwT7OfvKZjw2x2sIfIjuE8be/qFfXCjv8BcFUJw5lUTG4=";
+        saltB64 = "nrDOL1P3Cl6JgHrFo5SuRA==";
+        ivB64 = "sOqLXzZ8kuFv+MQh";
       }
 
       /*
