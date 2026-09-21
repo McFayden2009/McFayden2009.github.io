@@ -157,83 +157,286 @@
   </div>
 
   <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.style.visibility = "visible";
+    document.body.style.background = "linear-gradient(to bottom left, yellow, black)";
+  });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.body.style.visibility = "visible";
-      document.body.style.background = "linear-gradient(to bottom left, yellow, black)";
-    });
+  /*
+   * ============================================================
+   * ENCRYPTED WEBSITE A
+   * Password = Code 1
+   * ============================================================
+   */
+  const encryptedDataA = "REPLACE_WITH_ENCRYPTED_DATA_A";
+  const saltB64A = "REPLACE_WITH_SALT_A";
+  const ivB64A = "REPLACE_WITH_IV_A";
 
-    const encryptedData = "9Sn6RIB0kYajraRmctMQmwQolGdIq+b85iTzDAdBTim6KLrKD40mCDyfKtg=";
-    const saltB64 = "DFj+gUKYApRdIur5WdJ+oQ==";
-    const ivB64 = "ZWW14mJAjLZR5TgX";
+  /*
+   * ============================================================
+   * ENCRYPTED WEBSITE B
+   * Password = Code 1 + Code 2
+   * ============================================================
+   */
+  const encryptedDataB = "REPLACE_WITH_ENCRYPTED_DATA_B";
+  const saltB64B = "REPLACE_WITH_SALT_B";
+  const ivB64B = "REPLACE_WITH_IV_B";
 
-    function base64ToBytes(base64) {
-      return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-    }
+  /*
+   * ============================================================
+   * ENCRYPTED WEBSITE C
+   * Password = Code 1 + Code 2 + Code 3
+   * ============================================================
+   */
+  const encryptedDataC = "REPLACE_WITH_ENCRYPTED_DATA_C";
+  const saltB64C = "REPLACE_WITH_SALT_C";
+  const ivB64C = "REPLACE_WITH_IV_C";
 
-    async function deriveKey(password, salt) {
-      const enc = new TextEncoder();
 
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
-      );
+  function base64ToBytes(base64) {
+    return Uint8Array.from(
+      atob(base64),
+      c => c.charCodeAt(0)
+    );
+  }
 
-      return crypto.subtle.deriveKey(
-        {
-          name: "PBKDF2",
-          salt,
-          iterations: 100000,
-          hash: "SHA-256"
-        },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["decrypt"]
-      );
-    }
 
-    async function decryptPayload(combinedPassword) {
-      const salt = base64ToBytes(saltB64);
-      const iv = base64ToBytes(ivB64);
-      const ciphertext = base64ToBytes(encryptedData);
+  async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
 
-      const key = await deriveKey(combinedPassword, salt);
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"]
+    );
 
-      const decryptedBuffer = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv },
-        key,
-        ciphertext
-      );
+    return crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      {
+        name: "AES-GCM",
+        length: 256
+      },
+      false,
+      ["decrypt"]
+    );
+  }
 
-      return new TextDecoder().decode(decryptedBuffer).slice(0, -10);
-    }
 
-    document.getElementById("articleForm").addEventListener("submit", async (e) => {
+  async function decryptPayload(
+    combinedPassword,
+    encryptedData,
+    saltB64,
+    ivB64
+  ) {
+    const salt = base64ToBytes(saltB64);
+    const iv = base64ToBytes(ivB64);
+    const ciphertext = base64ToBytes(encryptedData);
+
+    const key = await deriveKey(combinedPassword, salt);
+
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: iv
+      },
+      key,
+      ciphertext
+    );
+
+    /*
+     * Your original code removes the final 10 characters.
+     * This assumes your encrypted plaintext still has
+     * the same 10-character padding at the end.
+     */
+    return new TextDecoder()
+      .decode(decryptedBuffer)
+      .slice(0, -10);
+  }
+
+
+  function showError() {
+    const button = document.querySelector(".submit-row button");
+
+    button.classList.remove("error");
+    void button.offsetWidth;
+    button.classList.add("error");
+  }
+
+
+  document
+    .getElementById("articleForm")
+    .addEventListener("submit", async (e) => {
+
       e.preventDefault();
 
       const code1 = document.getElementById("code1").value;
       const code2 = document.getElementById("code2").value;
       const code3 = document.getElementById("code3").value;
 
-      const combined = code1 + code2 + code3;
+      let stage = null;
+      let combinedPassword = null;
+      let encryptedData = null;
+      let saltB64 = null;
+      let ivB64 = null;
+
+      /*
+       * --------------------------------------------------------
+       * STAGE 1
+       * Only Code 1 has been entered
+       * --------------------------------------------------------
+       */
+      if (code1 && !code2 && !code3) {
+        stage = "A";
+
+        combinedPassword = code1;
+
+        encryptedData = encryptedDataA;
+        saltB64 = saltB64A;
+        ivB64 = ivB64A;
+      }
+
+      /*
+       * --------------------------------------------------------
+       * STAGE 2
+       * Code 1 + Code 2 have been entered
+       * --------------------------------------------------------
+       */
+      else if (code1 && code2 && !code3) {
+        stage = "B";
+
+        combinedPassword = code1 + code2;
+
+        encryptedData = encryptedDataB;
+        saltB64 = saltB64B;
+        ivB64 = ivB64B;
+      }
+
+      /*
+       * --------------------------------------------------------
+       * STAGE 3
+       * All three codes have been entered
+       * --------------------------------------------------------
+       */
+      else if (code1 && code2 && code3) {
+        stage = "C";
+
+        combinedPassword = code1 + code2 + code3;
+
+        encryptedData = encryptedDataC;
+        saltB64 = saltB64C;
+        ivB64 = ivB64C;
+      }
+
+      /*
+       * Invalid combination of fields
+       */
+      else {
+        showError();
+        return;
+      }
+
+
+      /*
+       * For A and B, open a blank tab immediately.
+       *
+       * This is done before the async decryption because some
+       * browsers will block window.open() after an await.
+       */
+      let newTab = null;
+
+      if (stage === "A" || stage === "B") {
+        newTab = window.open("about:blank", "_blank");
+
+        if (newTab) {
+          newTab.opener = null;
+        }
+      }
+
 
       try {
-        const decryptedCode = await decryptPayload(combined);
-        console.log(decryptedCode);
+        const decryptedUrl = await decryptPayload(
+          combinedPassword,
+          encryptedData,
+          saltB64,
+          ivB64
+        );
+
+        /*
+         * Optional safety check:
+         * Make sure the decrypted value looks like a URL.
+         */
+        if (!/^https?:\/\//i.test(decryptedUrl)) {
+          throw new Error("Invalid decrypted URL");
+        }
+
+
+        /*
+         * ------------------------------------------------------
+         * WEBSITE A
+         * New tab
+         * ------------------------------------------------------
+         */
+        if (stage === "A") {
+          if (newTab) {
+            newTab.location.href = decryptedUrl;
+          } else {
+            showError();
+          }
+
+          return;
+        }
+
+
+        /*
+         * ------------------------------------------------------
+         * WEBSITE B
+         * New tab
+         * ------------------------------------------------------
+         */
+        if (stage === "B") {
+          if (newTab) {
+            newTab.location.href = decryptedUrl;
+          } else {
+            showError();
+          }
+
+          return;
+        }
+
+
+        /*
+         * ------------------------------------------------------
+         * WEBSITE C
+         * Same tab
+         * ------------------------------------------------------
+         */
+        if (stage === "C") {
+          window.location.href = decryptedUrl;
+          return;
+        }
+
       } catch (err) {
-        console.log("wrong code");
-      
-        const button = document.querySelector(".submit-row button");
-      
-        button.classList.remove("error");
-        void button.offsetWidth; // restart animation
-        button.classList.add("error");
+        console.log("Wrong code");
+
+        /*
+         * If a blank tab was opened but the password was wrong,
+         * close it again.
+         */
+        if (newTab && !newTab.closed) {
+          newTab.close();
+        }
+
+        showError();
       }
     });
-  </script>
+</script>
 </body>
 </html>
