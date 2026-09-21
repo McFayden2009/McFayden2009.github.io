@@ -148,171 +148,350 @@
   <div id="typingOverlay">
     <div id="typingText"></div>
   </div>
+	
+<script>
+  /*
+   * ============================================================
+   * ENCRYPTED REDIRECT
+   * The decrypted value should be the URL directly.
+   * No 10-character suffix is used.
+   * ============================================================
+   */
+  const encryptedData =
+    "YmnE8adxpnPwi4Pb342wbdYRXHa+hV/OiRvMi0O0Ids=";
 
-  <script>
-    const verificationSequence = "ge3tviek30";
+  const saltB64 =
+    "ORV2SszP5ChjAmHTQ6S79A==";
 
-    const encryptedData = "8HZt9oYX3WywcAr51R+WfRvS2rIQc/pVna27mxYPb/fHMRybA3VKlD8F";
-    const saltB64 = "OsewEGfviTaBWAfq2IRZ2A==";
-    const ivB64 = "5TMGksHUHfDO7/Ke";
+  const ivB64 =
+    "Xvw2KPsm59Z0fKg8";
 
-	const displayEncryptedData = "T+0V73wcZN/r3m3qxr8lYeaiuON2YJCQKZYoM+S/sMPFggg4FJIFcqeSTPiK6E0AgcG8m5RZaMnsUy2d4ZjMyV3i58dXgGsRlHaRsqrcjlWpDd7D8N8TVJpK0AOjs0O0UFfjkOZSGselb77009joHBREYTdf3TkLoLi2xmGX08l/rbZJM6MfkU6KsBOOYieOFi/VfeIUPmy/Q+qVwXh6OmPuK/7iTuvjm0C/NqEXVqNahEKV+t3VdXUFYECPlzjNTlQaVv8fizErCtHTT+CS2/BQ5m42yisJjZ788l5YjLwMfg81IGKKuZDIt9AyN99MuUDQrJCoWK+S2lDLXcuZew/U7ktghF3T6o8Ry7TUFUSEzup712UXH5EL+TJQ7JJn0FbDTRRF5fNhY14+nprpYCkUh9AfoDE8h6KFm743x3TcYqSu1LBnSamT91o4z0sjQm4CGkGEf9dSdrz03syiYcGvyDkTANRpxvREnvzpjNOsz0Q71qMbm9ZyWJg5mZ3mVuNzA3nzRyutmt5nVdw440LYN3TNP2h3o/9yLHinwIzfVm4B57OLX5WsMPrg7+iSEjs65Iq8LAdQ6TN9XrohsvR/h8Y2WIU0OmEIRhfU8/0ExhR+6lZM4ue0mfD8OAocTTIga3g6HZL96XkBIzmXviZV6m0i+RZ5reXyihK8U3i/in4ph3GS4XS5W87Bk/GozNh27xAEx/JvtAqHoIhvIu423LoQBN16WfzGd2/+XheQ+bAabKlCrAEhtPpMpMajbaxgOoLVQCkfIT+c+bTyiP3e5z+2GHSuMETIj9PNtXIkLrJdIMi7DkFwCcic/6a8gN3yZFTFbKWUabOFUfVIiN/PQ9LaIJSRDEOJzDGkARjK5jLl8zyjBmZqK9CDpihr7gOpOh0Ih4+BaFIhepkuJlwLNj8NvlcwBxSjbyypuElMEM+plh/UbGqwc2qUZw7XKWgycDphQpHogXIk7563EuQbq/hnWIglLD4e4lxZpSX7hHtD02rIta3gfMiZOhiki1NryFfMMeM9TVcZGw6HQVof+64FWGvms+1QkXNdttxxBkyiU8zPCSmcE2dTV1XDL5iFu1itsxl7LC0iNcNUzPkIJn6yCBdEjxVMhJZOxzC1zsfcueUsQfksbDwoxdv8n7pxC8LDDU3C43Bun18afoooE5t4uEBxqF+926aX5JBKT5kwmBif91BMwasVMX4IGkOwTtk1btSRQh5YKTBmCvtfBPuMiT7nlNeFHVr+V5h1cERlNXAjpZugj+kJA4/+r6Vo6TYAvkX+ZNTECjElPjBHyegizCD6u7DapWs=";
-    const displaySaltB64 = "CeXu/y16Jqu6wdH8ippFpg==";
-    const displayIvB64 = "D4VUn3a0alZbPGa7";
 
-    function base64ToBytes(base64) {
-      return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-    }
+  /*
+   * ============================================================
+   * ENCRYPTED DISPLAY MESSAGE
+   * The decrypted value should be the display text directly.
+   * ============================================================
+   */
+  const displayEncryptedData =
+    "bGfY9aB+tDr2loKawp61bpzD1BeuGy3LbAxd6h/uXJ4ME95zKqlrwhThoI1nZxkKbrc52NfnV6Nz65GC0T+M0zYTNim9nEIurkDLBSxKKAZsaBoNlLL/oKP/NJxmhtq6RhzC83BxfYLlgkfsccieaX2uzsJH0QdPgG/t95p4hi2XugF+aPHyCHqDy24x2TW9oDf50FiliKBc+KRp7Q95p7wtB5T89cGFnQSKHwkHwUJRJLXNhuXJgyM3qN4uNahMPUxtaJdgFxCt99JqpVMUVrDG6x8rcaj7Q34/XteY4KvNkylVZtJckTv+WiRtaB6XfxV2yd4GI72g8vCaWmlVDMDVnJUL7sAaVQdxYuvEZSkQWH5PPlB3d7kNNDdYmufE2+Yk6vAvb0csAGTKBWEHzExqKAF0/FLBY+splbNdAEiVlGUov7s7ascxywAHTXOPhBQWowWYl1mi1brL+idecwrkH58EqwyVugW5C69N9UyR5V2jVlIGTQah5KekxKlsIzFEhvzUwZTif/W2lXWpKN18g20fJm45kNOExi8rLtFoJ/WNvptjPoNnDvnepaS0hKrY1v/b4kx67bLJukhWf+wNl320b+jCCPEd+mD5f232qgoiGYZQUxzhJR5tghA4/y1am8S7n03d6ImvzRNh82kl98QbKt31Xe7iOdCs00y21oA2xcCSwX4LNuPJ6e0pgKRpN9uzjYGRW1dBiJzRB4WXbjjsyQuYgO2bnSLUaSAYkVevmPMGqplh7QIzSX8HJZkPoA0WPr2Cfh2RUrIAXqb69btlEyKpQDk4z9CxmVCDSf7/z1S6kHAZfRhpAv6CGs9jEvrdkCDE5TGK14YinUpRtPObEfVajFrgVhD+AM8ZBoiuLLx0/04UzlJJbD9f+59epIQM2dZIV0YpSQTaXpczCErhF2SntMVN5OFw4X6Aij4Ep+ariNgAhFHAe1wHASkNNwJZtMobpVEQsnKIAfgd8bjsG7QnwlPapHw7BAxH0sPYu1wLQRPoQMZFqW5WPut+FZGQ79JTFI79B4oShJeswJZk0nljCfVaErLoF1AYUSkxb69rI/ub7wVHANamVNznI2YEILHzAGPtwP4N7oZrNAyddkSjCD9xAnAUB1CBKRSm6vJ9jO3pZwT/6LK44YPk5FdqhiMbxQU7wmEK7QK3+1oHli9JvD0otGzeEUMvoPrpurV9ImIWdfgT9g9Myu3f3d4WyxFtclN0gudbgnOuN28UgzAtldUB3pqBeAQT4bYxrn4dKlYl8ePjBfFbXt3kuswm93vzgZEwqcfclLI1XLcMz64AHwtP4mGSnG8x";
 
-    async function deriveKey(password, salt) {
-      const enc = new TextEncoder();
+  const displaySaltB64 =
+    "ORV2SszP5ChjAmHTQ6S79A==";
 
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
+  const displayIvB64 =
+    "Xvw2KPsm59Z0fKg8";
+
+
+  /*
+   * ============================================================
+   * BASE64
+   * ============================================================
+   */
+  function base64ToBytes(base64) {
+    return Uint8Array.from(
+      atob(base64),
+      c => c.charCodeAt(0)
+    );
+  }
+
+
+  /*
+   * ============================================================
+   * PBKDF2 KEY DERIVATION
+   * ============================================================
+   */
+  async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"]
+    );
+
+    return crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      {
+        name: "AES-GCM",
+        length: 256
+      },
+      false,
+      ["decrypt"]
+    );
+  }
+
+
+  /*
+   * ============================================================
+   * AES-GCM DECRYPTION
+   * ============================================================
+   */
+  async function decryptWithPassword(
+    cipherB64,
+    saltB64,
+    ivB64,
+    password
+  ) {
+    const salt = base64ToBytes(saltB64);
+    const iv = base64ToBytes(ivB64);
+    const ciphertext = base64ToBytes(cipherB64);
+
+    const key = await deriveKey(password, salt);
+
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: iv
+      },
+      key,
+      ciphertext
+    );
+
+    return new TextDecoder().decode(decryptedBuffer);
+  }
+
+
+  /*
+   * ============================================================
+   * TYPING EFFECT
+   * ============================================================
+   */
+  function typeText(target, text, speed = 5) {
+    return new Promise((resolve) => {
+      target.textContent = "";
+
+      let i = 0;
+
+      const timer = setInterval(() => {
+        target.textContent += text.charAt(i);
+
+        playClick();
+
+        i += 1;
+
+        if (i >= text.length) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, speed + Math.floor(Math.random() * 25));
+    });
+  }
+
+
+  /*
+   * ============================================================
+   * MAIN FUNCTION
+   * ============================================================
+   */
+  async function run() {
+    /*
+     * Automatically lowercase the code.
+     */
+    const password = document
+      .getElementById("codeInput")
+      .value
+      .toLowerCase();
+
+    const resultBox =
+      document.getElementById("resultBox");
+
+    const wrongCode =
+      document.getElementById("wrongCode");
+
+
+    /*
+     * Clear previous error.
+     */
+    wrongCode.textContent = "";
+
+
+    try {
+      /*
+       * Decrypt the URL.
+       */
+      const secretMessage = await decryptWithPassword(
+        encryptedData,
+        saltB64,
+        ivB64,
+        password
       );
 
-      return crypto.subtle.deriveKey(
-        {
-          name: "PBKDF2",
-          salt,
-          iterations: 100000,
-          hash: "SHA-256"
-        },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["decrypt"]
-      );
-    }
 
-    async function decryptWithPassword(cipherB64, saltB64, ivB64, password) {
-      const salt = base64ToBytes(saltB64);
-      const iv = base64ToBytes(ivB64);
-      const ciphertext = base64ToBytes(cipherB64);
-
-      const key = await deriveKey(password, salt);
-
-      const decryptedBuffer = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv },
-        key,
-        ciphertext
-      );
-
-      return new TextDecoder().decode(decryptedBuffer);
-    }
-
-    function typeText(target, text, speed = 5) {
-      return new Promise((resolve) => {
-        target.textContent = "";
-        let i = 0;
-
-        const timer = setInterval(() => {
-          target.textContent += text.charAt(i);
-		  playClick();
-          i += 1;
-
-          if (i >= text.length) {
-            clearInterval(timer);
-            resolve();
-          }
-        }, speed + Math.Floor(Math.random() * 25));
-      });
-    }
-
-    async function run() {
-      const password = document.getElementById("codeInput").value.toLowerCase();
-      const resultBox = document.getElementById("resultBox");
-      const wrongCode = document.getElementById("wrongCode");
-
-      try {
-        const decrypted = await decryptWithPassword(
-          encryptedData,
-          saltB64,
-          ivB64,
-          password
-        );
-
-		const Ddecrypted = await decryptWithPassword(
+      /*
+       * Decrypt the display text.
+       */
+      const displaySecretMessage =
+        await decryptWithPassword(
           displayEncryptedData,
           displaySaltB64,
           displayIvB64,
           password
         );
 
-        if (!decrypted.endsWith(verificationSequence)) {
-          throw new Error("Bad verification");
-        }
 
-        const secretMessage = decrypted.slice(0, -verificationSequence.length);
-		const displaySecretMessage = Ddecrypted.slice(0, -verificationSequence.length);
+      /*
+       * Make sure the decrypted URL looks valid.
+       */
+      if (!/^https?:\/\//i.test(secretMessage)) {
+        throw new Error("Invalid decrypted URL");
+      }
 
-        document.getElementById("stage").style.visibility = "hidden";
 
-        const typingOverlay = document.getElementById("typingOverlay");
-        const typingText = document.getElementById("typingText");
+      /*
+       * Hide the code input stage.
+       */
+      document.getElementById("stage").style.visibility =
+        "hidden";
 
-        typingOverlay.style.display = "flex";
 
-        await typeText(typingText, displaySecretMessage, 100);
+      /*
+       * Show the typing overlay.
+       */
+      const typingOverlay =
+        document.getElementById("typingOverlay");
 
-        setTimeout(() => {
-          window.location.href = secretMessage;
-        }, 800);
+      const typingText =
+        document.getElementById("typingText");
 
-      } catch (e) {
+      typingOverlay.style.display = "flex";
+
+
+      /*
+       * Type the decrypted display message.
+       */
+      await typeText(
+        typingText,
+        displaySecretMessage,
+        100
+      );
+
+
+      /*
+       * Redirect after the message finishes.
+       */
+      setTimeout(() => {
+        window.location.href = secretMessage;
+      }, 800);
+
+    } catch (e) {
+      console.error("Wrong code or decryption failed:", e);
+
+      /*
+       * Show wrong-code message.
+       */
+      if (resultBox) {
         resultBox.style.display = "none";
+      }
+
+      if (wrongCode) {
+        wrongCode.style.display = "block";
         wrongCode.textContent = "Wrong code!";
       }
     }
+  }
 
-    document.getElementById("codeForm").addEventListener("submit", (e) => {
+
+  /*
+   * ============================================================
+   * FORM SUBMIT
+   * ============================================================
+   */
+  document
+    .getElementById("codeForm")
+    .addEventListener("submit", (e) => {
       e.preventDefault();
       run();
     });
 
-    let audioCtx = null;
 
-    function playClick() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+  /*
+   * ============================================================
+   * AUDIO
+   * ============================================================
+   */
+  let audioCtx = null;
 
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
 
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = "square";
-      osc.frequency.setValueAtTime(900, now);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.001);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.035);
+  function playClick() {
+    if (!audioCtx) {
+      audioCtx = new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (
-        e.key === "Shift" ||
-        e.key === "Control" ||
-        e.key === "Alt" ||
-        e.key === "Meta"
-      ) return;
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
 
-      playClick();
-    });
-  </script>
+    const now = audioCtx.currentTime;
+
+    const osc =
+      audioCtx.createOscillator();
+
+    const gain =
+      audioCtx.createGain();
+
+
+    osc.type = "square";
+
+    osc.frequency.setValueAtTime(
+      900,
+      now
+    );
+
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.08,
+      now + 0.001
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + 0.03
+    );
+
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+
+    osc.start(now);
+    osc.stop(now + 0.035);
+  }
+
+
+  /*
+   * ============================================================
+   * KEYBOARD SOUND
+   * ============================================================
+   */
+  document.addEventListener("keydown", (e) => {
+    if (
+      e.key === "Shift" ||
+      e.key === "Control" ||
+      e.key === "Alt" ||
+      e.key === "Meta"
+    ) {
+      return;
+    }
+
+    playClick();
+  });
+</script>
 </body>
 </html>
