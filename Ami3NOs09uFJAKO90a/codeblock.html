@@ -369,32 +369,64 @@
        * Open the tab BEFORE awaiting decryption because
        * browsers may block window.open() after an await.
        */
-      try {
-  const decryptedUrl = await decryptPayload(
-    combinedPassword,
-    encryptedData,
-    saltB64,
-    ivB64
-  );
-
-  if (!/^https?:\/\//i.test(decryptedUrl)) {
-    throw new Error("Invalid URL");
-  }
-
-  if (stage === "A" || stage === "B") {
-    window.open(decryptedUrl, "_blank");
-    return;
-  }
-
-  if (stage === "C") {
-    window.location.href = decryptedUrl;
-    return;
-  }
-
-} catch (err) {
-  console.log("Wrong code");
-  showError();
-}
+            try {
+        const decryptedUrl = await decryptPayload(
+          combinedPassword,
+          encryptedData,
+          saltB64,
+          ivB64
+        );
+      
+        /*
+         * Make sure the decrypted value is a URL.
+         */
+        if (!/^https?:\/\//i.test(decryptedUrl)) {
+          throw new Error("Decrypted value is not a valid URL.");
+        }
+      
+      
+        /*
+         * ==========================================================
+         * WEBSITE A / B
+         * Open in a new tab AFTER successful validation.
+         * ==========================================================
+         */
+        if (stage === "A" || stage === "B") {
+      
+          const newTab = window.open(
+            decryptedUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+      
+          /*
+           * If the browser blocks the new tab, fall back to
+           * navigating the current tab instead of doing nothing.
+           */
+          if (!newTab) {
+            window.location.href = decryptedUrl;
+          }
+      
+          return;
+        }
+      
+      
+        /*
+         * ==========================================================
+         * WEBSITE C
+         * Open in the current tab.
+         * ==========================================================
+         */
+        if (stage === "C") {
+          window.location.href = decryptedUrl;
+          return;
+        }
+      
+      } catch (err) {
+        console.log("Wrong code");
+        showError();
+      }
+    });
 </script>
 </body>
 </html>
