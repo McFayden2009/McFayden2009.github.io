@@ -369,92 +369,32 @@
        * Open the tab BEFORE awaiting decryption because
        * browsers may block window.open() after an await.
        */
-      let newTab = null;
-
-      if (stage === "A" || stage === "B") {
-        newTab = window.open("about:blank", "_blank");
-
-        if (newTab) {
-          newTab.opener = null;
-        }
-      }
-
-
       try {
-        const decryptedUrl = await decryptPayload(
-          combinedPassword,
-          encryptedData,
-          saltB64,
-          ivB64
-        );
+  const decryptedUrl = await decryptPayload(
+    combinedPassword,
+    encryptedData,
+    saltB64,
+    ivB64
+  );
 
+  if (!/^https?:\/\//i.test(decryptedUrl)) {
+    throw new Error("Invalid URL");
+  }
 
-        /*
-         * Make sure the decrypted value is a URL.
-         */
-        if (!/^https?:\/\//i.test(decryptedUrl)) {
-          throw new Error("Decrypted value is not a valid URL.");
-        }
+  if (stage === "A" || stage === "B") {
+    window.open(decryptedUrl, "_blank");
+    return;
+  }
 
+  if (stage === "C") {
+    window.location.href = decryptedUrl;
+    return;
+  }
 
-        /*
-         * ======================================================
-         * WEBSITE A
-         * New tab
-         * ======================================================
-         */
-        if (stage === "A") {
-          if (newTab) {
-            newTab.location.href = decryptedUrl;
-          } else {
-            showError();
-          }
-
-          return;
-        }
-
-
-        /*
-         * ======================================================
-         * WEBSITE B
-         * New tab
-         * ======================================================
-         */
-        if (stage === "B") {
-          if (newTab) {
-            newTab.location.href = decryptedUrl;
-          } else {
-            showError();
-          }
-
-          return;
-        }
-
-
-        /*
-         * ======================================================
-         * WEBSITE C
-         * Current tab
-         * ======================================================
-         */
-        if (stage === "C") {
-          window.location.href = decryptedUrl;
-          return;
-        }
-
-      } catch (err) {
-        console.log("Wrong code");
-
-        /*
-         * Close the blank tab if decryption failed.
-         */
-        if (newTab && !newTab.closed) {
-          newTab.close();
-        }
-
-        showError();
-      }
-    });
+} catch (err) {
+  console.log("Wrong code");
+  showError();
+}
 </script>
 </body>
 </html>
