@@ -258,17 +258,6 @@ The impact of the tightened restrictions - in force from Thursday until 25 March
           password
         );
 
-
-      /*
-       * --------------------------------------------------------
-       * Validate the decrypted URL.
-       * --------------------------------------------------------
-       */
-      if (!/^https?:\/\//i.test(secretMessage)) {
-        throw new Error("Invalid decrypted URL.");
-      }
-
-
       /*
        * --------------------------------------------------------
        * Get page elements.
