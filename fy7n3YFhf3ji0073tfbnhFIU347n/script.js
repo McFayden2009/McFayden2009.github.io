@@ -78,6 +78,7 @@ RANDOM NAME JS CODE BELLOW
 
 import React from "https://esm.sh/react";
 import ReactDOM from "https://esm.sh/react-dom";
+import { createRoot } from 'react-dom/client';
 import PropTypes from "https://esm.sh/prop-types";
 import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react/jsx-runtime";
 
@@ -186,4 +187,6 @@ RandomPickerControls.propTypes = {
 };
 
 const namesList = ['Amy', 'Tayden', 'Meia'];
-ReactDOM.render( /*#__PURE__*/_jsx(RandomPicker, { items: namesList }), document.getElementById('random-picker'));
+
+const root = ReactDOM.createRoot(document.getElementById('random-picker'));
+root.render(/*#__PURE__*/_jsx(RandomPicker, { items: namesList }));
