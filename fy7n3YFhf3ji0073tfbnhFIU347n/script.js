@@ -187,5 +187,5 @@ RandomPickerControls.propTypes = {
 
 const namesList = ['Amy', 'Tayden', 'Meia'];
 
-const root = ReactDOM.createRoot(document.getElementById('random-picker'));
+const root = createRoot(document.getElementById('random-picker'));
 root.render(/*#__PURE__*/_jsx(RandomPicker, { items: namesList }));
