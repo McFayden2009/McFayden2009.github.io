@@ -77,7 +77,7 @@ RANDOM NAME JS CODE BELLOW
 
 
 import React from "https://esm.sh/react";
-import { createRoot } from "https://esm.sh";
+import { createRoot } from "https://esm.sh/react-dom/client";
 import PropTypes from "https://esm.sh/prop-types";
 import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react/jsx-runtime";
 
